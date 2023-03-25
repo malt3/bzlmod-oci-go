@@ -1,0 +1,18 @@
+load("@gazelle//:def.bzl", "gazelle")
+# load("@bazel_gazelle//:def.bzl", "gazelle")
+
+# gazelle:map_kind go_binary go_binary @rules_go//go:def.bzl
+# gazelle:map_kind go_library go_library @rules_go//go:def.bzl
+# gazelle:map_kind go_test go_test @rules_go//go:def.bzl
+# gazelle:prefix github.com/malt3/bzlmod-oci-go
+gazelle(name = "gazelle")
+
+gazelle(
+    name = "gazelle-update-repos",
+    args = [
+        "-from_file=go.mod",
+        "-to_macro=repositories.bzl%go_repositories",
+        "-prune",
+    ],
+    command = "update-repos",
+)

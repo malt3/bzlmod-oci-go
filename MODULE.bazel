@@ -1,0 +1,51 @@
+module(
+    name = "bzlmod-oci-go",
+    version = "0.0.1",
+)
+
+bazel_dep(name = "platforms", version = "0.0.6")
+
+bazel_dep(name = "rules_go", version = "0.38.1", dev_dependency = True)
+
+go_sdk = use_extension(
+    "@rules_go//go:extensions.bzl",
+    "go_sdk",
+    dev_dependency = True,
+)
+use_repo(go_sdk, "go_default_sdk")
+
+bazel_dep(
+    name = "gazelle",
+    version = "0.29.0",
+    dev_dependency = True,
+)
+
+go_deps = use_extension(
+    "@gazelle//:extensions.bzl",
+    "go_deps",
+    dev_dependency = True,
+)
+go_deps.from_file(go_mod = "//:go.mod")
+
+bazel_dep(name = "rules_pkg", version = "0.8.1")
+
+bazel_dep(
+    name = "rules_oci",
+    version = "0.3.8",
+    dev_dependency = True,
+)
+
+oci = use_extension(
+    "@rules_oci//oci:extensions.bzl",
+    "oci",
+    dev_dependency = True,
+)
+
+oci.pull(
+    name = "distroless_base",
+    digest = "sha256:ccaef5ee2f1850270d453fdf700a5392534f8d1a8ca2acda391fbb6a06b81c86",
+    image = "gcr.io/distroless/base",
+    platforms = ["linux/amd64","linux/arm64"],
+)
+
+use_repo(oci, "distroless_base")
